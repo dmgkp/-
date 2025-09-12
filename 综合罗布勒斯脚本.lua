@@ -1,4 +1,3 @@
-
 print("反挂机开启")
 local vu = game:GetService("VirtualUser")
 game:GetService("Players").LocalPlayer.Idled:connect(function()
