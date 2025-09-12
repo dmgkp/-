@@ -11,18 +11,25 @@ game:GetService("Players").LocalPlayer.Idled:connect(function()
    vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
 end)
 
--- 创建自定义可折叠UI界面
-local CustomUI = {}
+-- 创建Orion库界面
+local OrionLib = loadstring(game:HttpGet("https://pastebin.com/raw/FUEx0f3G"))()
+local Window = OrionLib:MakeWindow({
+    Name = "综合罗布勒斯脚本",
+    HidePremium = false,
+    SaveConfig = true,
+    ConfigFolder = "综合脚本",
+    IntroText = "综合脚本 - 结合多个脚本功能"
+})
 
--- 创建一个替代OrionLib通知功能的函数
-function MakeNotification(notification)
-    print("[" .. notification.Name .. "] " .. notification.Content)
-end
+-- 显示通知
+OrionLib:MakeNotification({
+    Name = "综合脚本",
+    Content = "欢迎使用综合罗布勒斯脚本！",
+    Image = "rbxassetid://4483345998",
+    Time = 5
+})
 
--- 为兼容性创建OrionLib表
-local OrionLib = {
-    MakeNotification = MakeNotification
-}
+
 
 -- 创建主界面
 local MainUI = Instance.new("ScreenGui")
@@ -3569,13 +3576,13 @@ local function createGameNotification(title, message, duration)
 end
 
 -- 显示脚本加载完成信息
-createGameNotification("综合罗布勒斯脚本", "v3.6.0加载完成！已添加高级自定义UI界面。", 5)
-createGameNotification("使用说明", "请查看屏幕上的自定义界面以访问脚本功能", 5)
-createGameNotification("重要提示", "已完全重构用户界面系统，移除了对Orion库的依赖", 5)
+createGameNotification("综合罗布勒斯脚本", "v3.7.0加载完成！已重新引入Orion库依赖。", 5)
+createGameNotification("使用说明", "请查看屏幕上的Orion库界面以访问脚本功能", 5)
+createGameNotification("重要提示", "已恢复使用Orion库的悬浮窗UI框架", 5)
 
 --[[
     综合罗布勒斯脚本
-    版本: v3.6.0
+    版本: v3.7.0
     更新日期: 2025-09-12
     
     功能说明:
@@ -3606,10 +3613,7 @@ createGameNotification("重要提示", "已完全重构用户界面系统，移�
     - 北风中心系列脚本：力量传奇、极速传奇、吃人的火车爱德华、跟踪玩家、飞行V3等
     - 更多通用功能：无击倒、超级跳跃、增强飞行等
     - 更多外部脚本链接：墨水游戏、99夜、后门系列、鹿管脚本等
-    - 全新自定义UI：可折叠、美观的自定义用户界面
-    - 完全重构的用户界面系统，移除了对Orion库的依赖
-    - 高级UI设计：带有悬停效果、动画过渡和现代化外观
-    - 传送功能专用页面：包含保存位置、显示坐标、自定义传送等功能
+    - 重新引入Orion库依赖：恢复使用Orion库的悬浮窗UI框架
     
     注意事项:
     - 此脚本仅供娱乐使用，仅供参考学习
