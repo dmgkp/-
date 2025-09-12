@@ -1,8 +1,4 @@
--- 综合罗布勒斯脚本
--- 结合逸风Ohio脚本、马牛逼脚本和皮脚本的功能
--- 仅供娱乐，脚本仅供参考
 
--- 反挂机功能
 print("反挂机开启")
 local vu = game:GetService("VirtualUser")
 game:GetService("Players").LocalPlayer.Idled:connect(function()
@@ -11,34 +7,82 @@ game:GetService("Players").LocalPlayer.Idled:connect(function()
    vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
 end)
 
--- 创建Orion库界面
 local OrionLib = loadstring(game:HttpGet("https://pastebin.com/raw/FUEx0f3G"))()
-local Window = OrionLib:MakeWindow({
-    Name = "综合罗布勒斯脚本",
-    HidePremium = false,
-    SaveConfig = true,
-    ConfigFolder = "综合脚本",
-    IntroText = "综合脚本 - 结合多个脚本功能"
+local LBLG = Instance.new("ScreenGui")
+local LBL = Instance.new("TextLabel")
+local player = game.Players.LocalPlayer
+
+LBLG.Name = "LBLG"
+LBLG.Parent = game.CoreGui
+LBLG.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+LBLG.Enabled = true
+LBL.Name = "LBL"
+LBL.Parent = LBLG
+LBL.BackgroundColor3 = Color3.new(1, 1, 1)
+LBL.BackgroundTransparency = 1
+LBL.BorderColor3 = Color3.new(0, 0, 0)
+LBL.Position = UDim2.new(0.75,0,0.010,0)
+LBL.Size = UDim2.new(0, 133, 0, 30)
+LBL.Font = Enum.Font.GothamSemibold
+LBL.Text = "TextLabel"
+LBL.TextColor3 = Color3.new(1, 1, 1)
+LBL.TextScaled = true
+LBL.TextSize = 14
+LBL.TextWrapped = true
+LBL.Visible = true
+
+local FpsLabel = LBL
+local Heartbeat = game:GetService("RunService").Heartbeat
+local LastIteration, Start
+local FrameUpdateTable = { }
+
+local function HeartbeatUpdate()
+	LastIteration = tick()
+	for Index = #FrameUpdateTable, 1, -1 do
+		FrameUpdateTable[Index + 1] = (FrameUpdateTable[Index] >= LastIteration - 1) and FrameUpdateTable[Index] or nil
+	end
+	FrameUpdateTable[1] = LastIteration
+	local CurrentFPS = (tick() - Start >= 1 and #FrameUpdateTable) or (#FrameUpdateTable / (tick() - Start))
+	CurrentFPS = CurrentFPS - CurrentFPS % 1
+	FpsLabel.Text = ("死亡时间:"..os.date("%H").."时"..os.date("%M").."分"..os.date("%S"))
+end
+Start = tick()
+Heartbeat:Connect(HeartbeatUpdate)
+local Window = OrionLib:MakeWindow({Name = "综合罗布勒斯脚本", HidePremium = false, SaveConfig = true, IntroText = "综合脚本 - 结合多个脚本功能", ConfigFolder = "综合脚本"})
+
+game:GetService("StarterGui"):SetCore("SendNotification",{ Title = "综合罗布勒斯脚本"; Text ="欢迎使用综合罗布勒斯脚本"; Duration = 4; })
+
+local about = Window:MakeTab({
+    Name = "作者信息",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
 })
 
--- 显示通知
-OrionLib:MakeNotification({
-    Name = "综合脚本",
-    Content = "欢迎使用综合罗布勒斯脚本！",
-    Image = "rbxassetid://4483345998",
-    Time = 5
+about:AddParagraph("作者: 综合脚本团队")
+about:AddParagraph("此脚本结合了多个开源脚本的功能")
+about:AddParagraph("仅供娱乐和学习使用")
+
+local playerInfo = Window:MakeTab({
+    Name = "玩家信息",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
 })
 
+playerInfo:AddParagraph("您的用户名:", " "..game.Players.LocalPlayer.Name.."")
+playerInfo:AddParagraph("您的注入器:", " "..identifyexecutor().."")
+playerInfo:AddParagraph("您当前服务器的ID", " "..game.GameId.."")
 
+local announcement = Window:MakeTab({
+    Name = "公告",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
 
--- 创建主界面
-local MainUI = Instance.new("ScreenGui")
-MainUI.Name = "CustomRobloxUI"
-MainUI.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-MainUI.ResetOnSpawn = false
-MainUI.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+announcement:AddParagraph("此脚本为免费缝合脚本")
+announcement:AddParagraph("仅供娱乐和学习使用")
+announcement:AddParagraph("请勿用于非法用途")
+announcement:AddParagraph("使用本脚本造成的任何后果由使用者自行承担")
 
--- 主框架
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
 MainFrame.Size = UDim2.new(0, 450, 0, 350)
@@ -50,7 +94,6 @@ MainFrame.Active = true
 MainFrame.Draggable = true
 MainFrame.Parent = MainUI
 
--- 添加边框效果
 local BorderFrame = Instance.new("Frame")
 BorderFrame.Name = "BorderFrame"
 BorderFrame.Size = UDim2.new(1, 0, 1, 0)
@@ -60,7 +103,6 @@ BorderFrame.BorderSizePixel = 2
 BorderFrame.BorderColor3 = Color3.fromRGB(80, 80, 80)
 BorderFrame.Parent = MainFrame
 
--- 标题栏
 local TitleBar = Instance.new("Frame")
 TitleBar.Name = "TitleBar"
 TitleBar.Size = UDim2.new(1, 0, 0, 35)
@@ -83,7 +125,6 @@ TitleLabel.TextSize = 18
 TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
 TitleLabel.Parent = TitleBar
 
--- 关闭按钮
 local CloseButton = Instance.new("TextButton")
 CloseButton.Name = "CloseButton"
 CloseButton.Size = UDim2.new(0, 30, 0, 30)
@@ -98,7 +139,6 @@ CloseButton.TextSize = 16
 CloseButton.AutoButtonColor = false
 CloseButton.Parent = TitleBar
 
--- 关闭按钮悬停效果
 CloseButton.MouseEnter:Connect(function()
     CloseButton.BackgroundTransparency = 0
 end)
@@ -111,7 +151,6 @@ CloseButton.MouseButton1Click:Connect(function()
     MainUI:Destroy()
 end)
 
--- 最小化按钮
 local MinimizeButton = Instance.new("TextButton")
 MinimizeButton.Name = "MinimizeButton"
 MinimizeButton.Size = UDim2.new(0, 30, 0, 30)
@@ -126,7 +165,6 @@ MinimizeButton.TextSize = 16
 MinimizeButton.AutoButtonColor = false
 MinimizeButton.Parent = TitleBar
 
--- 最小化按钮悬停效果
 MinimizeButton.MouseEnter:Connect(function()
     MinimizeButton.BackgroundTransparency = 0
 end)
@@ -135,7 +173,6 @@ MinimizeButton.MouseLeave:Connect(function()
     MinimizeButton.BackgroundTransparency = 0.3
 end)
 
--- 内容区域
 local ContentFrame = Instance.new("Frame")
 ContentFrame.Name = "ContentFrame"
 ContentFrame.Size = UDim2.new(1, 0, 1, -35)
@@ -145,7 +182,6 @@ ContentFrame.BackgroundTransparency = 0.1
 ContentFrame.BorderSizePixel = 0
 ContentFrame.Parent = MainFrame
 
--- 侧边栏（用于分类标签）
 local Sidebar = Instance.new("Frame")
 Sidebar.Name = "Sidebar"
 Sidebar.Size = UDim2.new(0, 130, 1, 0)
@@ -155,7 +191,6 @@ Sidebar.BackgroundTransparency = 0.2
 Sidebar.BorderSizePixel = 0
 Sidebar.Parent = ContentFrame
 
--- 添加侧边栏边框
 local SidebarBorder = Instance.new("Frame")
 SidebarBorder.Name = "SidebarBorder"
 SidebarBorder.Size = UDim2.new(0, 2, 1, 0)
@@ -164,7 +199,6 @@ SidebarBorder.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 SidebarBorder.BorderSizePixel = 0
 SidebarBorder.Parent = Sidebar
 
--- 主内容区域
 local MainContent = Instance.new("Frame")
 MainContent.Name = "MainContent"
 MainContent.Size = UDim2.new(1, -130, 1, 0)
@@ -174,7 +208,6 @@ MainContent.BackgroundTransparency = 0.15
 MainContent.BorderSizePixel = 0
 MainContent.Parent = ContentFrame
 
--- 滚动框用于主内容
 local ContentScrolling = Instance.new("ScrollingFrame")
 ContentScrolling.Name = "ContentScrolling"
 ContentScrolling.Size = UDim2.new(1, -15, 1, -15)
@@ -186,7 +219,6 @@ ContentScrolling.ScrollBarThickness = 8
 ContentScrolling.ScrollBarImageColor3 = Color3.fromRGB(80, 80, 80)
 ContentScrolling.Parent = MainContent
 
--- 标签按钮容器
 local TabButtons = Instance.new("Frame")
 TabButtons.Name = "TabButtons"
 TabButtons.Size = UDim2.new(1, 0, 1, -15)
@@ -194,611 +226,8 @@ TabButtons.Position = UDim2.new(0, 0, 0, 5)
 TabButtons.BackgroundTransparency = 1
 TabButtons.Parent = Sidebar
 
--- 存储标签和内容的表
-CustomUI.Tabs = {}
-CustomUI.CurrentTab = nil
 
--- 创建标签的函数
-function CustomUI.CreateTab(name)
-    local tab = {}
-    tab.Name = name
-    tab.Content = Instance.new("Frame")
-    tab.Content.Name = name .. "Content"
-    tab.Content.Size = UDim2.new(1, 0, 0, 0)
-    tab.Content.BackgroundTransparency = 1
-    tab.Content.Visible = false
-    tab.Content.Parent = ContentScrolling
-    
-    -- 创建标签按钮
-    local button = Instance.new("TextButton")
-    button.Name = name .. "Button"
-    button.Size = UDim2.new(1, -15, 0, 35)
-    button.Position = UDim2.new(0, 5, 0, (#CustomUI.Tabs) * 40)
-    button.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
-    button.BackgroundTransparency = 0.3
-    button.BorderSizePixel = 0
-    button.Text = name
-    button.TextColor3 = Color3.fromRGB(200, 200, 200)
-    button.Font = Enum.Font.SourceSansSemibold
-    button.TextSize = 15
-    button.AutoButtonColor = false
-    button.Parent = TabButtons
-    
-    -- 标签按钮悬停效果
-    button.MouseEnter:Connect(function()
-        if button.BackgroundColor3 ~= Color3.fromRGB(75, 75, 75) then
-            button.BackgroundTransparency = 0.1
-        end
-    end)
-    
-    button.MouseLeave:Connect(function()
-        if button.BackgroundColor3 ~= Color3.fromRGB(75, 75, 75) then
-            button.BackgroundTransparency = 0.3
-        end
-    end)
-    
-    -- 标签按钮点击事件
-    button.MouseButton1Click:Connect(function()
-        -- 隐藏所有标签内容
-        for _, t in pairs(CustomUI.Tabs) do
-            t.Content.Visible = false
-        end
-        
-        -- 显示当前标签内容
-        tab.Content.Visible = true
-        CustomUI.CurrentTab = tab
-        
-        -- 更新按钮颜色
-        for _, child in pairs(TabButtons:GetChildren()) do
-            if child:IsA("TextButton") then
-                child.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
-                child.BackgroundTransparency = 0.3
-                child.TextColor3 = Color3.fromRGB(200, 200, 200)
-            end
-        end
-        button.BackgroundColor3 = Color3.fromRGB(75, 75, 75)
-        button.BackgroundTransparency = 0
-        button.TextColor3 = Color3.fromRGB(255, 255, 255)
-    end)
-    
-    tab.Button = button
-    CustomUI.Tabs[name] = tab
-    
-    -- 如果这是第一个标签，自动选择它
-    if #CustomUI.Tabs == 1 then
-        button.BackgroundColor3 = Color3.fromRGB(75, 75, 75)
-        button.BackgroundTransparency = 0
-        button.TextColor3 = Color3.fromRGB(255, 255, 255)
-        tab.Content.Visible = true
-        CustomUI.CurrentTab = tab
-    end
-    
-    return tab
-end
 
--- 创建可折叠区域的函数
-function CustomUI.CreateSection(tab, name)
-    local section = {}
-    section.Name = name
-    section.Elements = {}
-    
-    -- 创建折叠按钮
-    local foldButton = Instance.new("TextButton")
-    foldButton.Name = "FoldButton"
-    foldButton.Size = UDim2.new(1, -25, 0, 30)
-    foldButton.Position = UDim2.new(0, 10, 0, #tab.Content:GetChildren() * 35)
-    foldButton.BackgroundColor3 = Color3.fromRGB(65, 65, 65)
-    foldButton.BackgroundTransparency = 0.2
-    foldButton.BorderSizePixel = 0
-    foldButton.Text = "▶ " .. name
-    foldButton.TextColor3 = Color3.fromRGB(230, 230, 230)
-    foldButton.Font = Enum.Font.SourceSansSemibold
-    foldButton.TextSize = 15
-    foldButton.TextXAlignment = Enum.TextXAlignment.Left
-    foldButton.AutoButtonColor = false
-    foldButton.Parent = tab.Content
-    
-    -- 折叠按钮悬停效果
-    foldButton.MouseEnter:Connect(function()
-        foldButton.BackgroundTransparency = 0
-    end)
-    
-    foldButton.MouseLeave:Connect(function()
-        foldButton.BackgroundTransparency = 0.2
-    end)
-    
-    -- 创建内容容器
-    local contentContainer = Instance.new("Frame")
-    contentContainer.Name = "ContentContainer"
-    contentContainer.Size = UDim2.new(1, -20, 0, 0)
-    contentContainer.Position = UDim2.new(0, 10, 0, #tab.Content:GetChildren() * 35 + 35)
-    contentContainer.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    contentContainer.BackgroundTransparency = 0.1
-    contentContainer.BorderSizePixel = 0
-    contentContainer.Visible = false
-    contentContainer.Parent = tab.Content
-    
-    -- 添加内容容器边框
-    local ContainerBorder = Instance.new("Frame")
-    ContainerBorder.Name = "ContainerBorder"
-    ContainerBorder.Size = UDim2.new(1, 0, 1, 0)
-    ContainerBorder.Position = UDim2.new(0, 0, 0, 0)
-    ContainerBorder.BackgroundTransparency = 1
-    ContainerBorder.BorderSizePixel = 1
-    ContainerBorder.BorderColor3 = Color3.fromRGB(80, 80, 80)
-    ContainerBorder.Parent = contentContainer
-    
-    -- 折叠状态
-    local isFolded = true
-    
-    -- 折叠按钮点击事件
-    foldButton.MouseButton1Click:Connect(function()
-        isFolded = not isFolded
-        contentContainer.Visible = not isFolded
-        foldButton.Text = (isFolded and "▶ " or "▼ ") .. name
-        
-        -- 更新内容容器大小
-        if not isFolded then
-            local height = 0
-            for _, element in pairs(contentContainer:GetChildren()) do
-                if element:IsA("GuiObject") then
-                    height = height + element.Size.Y.Offset + 5
-                end
-            end
-            contentContainer.Size = UDim2.new(1, -20, 0, height + 10)
-        else
-            contentContainer.Size = UDim2.new(1, -20, 0, 0)
-        end
-        
-        -- 更新画布大小
-        local canvasHeight = 0
-        for _, child in pairs(tab.Content:GetChildren()) do
-            if child:IsA("GuiObject") then
-                canvasHeight = canvasHeight + child.Size.Y.Offset + child.Position.Y.Offset + 15
-            end
-        end
-        ContentScrolling.CanvasSize = UDim2.new(0, 0, 0, canvasHeight + 50)
-    end)
-    
-    section.FoldButton = foldButton
-    section.ContentContainer = contentContainer
-    
-    return section
-end
-
--- 创建按钮的函数
-function CustomUI.CreateButton(section, name, callback)
-    local button = Instance.new("TextButton")
-    button.Name = name
-    button.Size = UDim2.new(1, -15, 0, 35)
-    button.Position = UDim2.new(0, 5, 0, #section.ContentContainer:GetChildren() * 40)
-    button.BackgroundColor3 = Color3.fromRGB(85, 85, 85)
-    button.BackgroundTransparency = 0.2
-    button.BorderSizePixel = 0
-    button.Text = name
-    button.TextColor3 = Color3.fromRGB(245, 245, 245)
-    button.Font = Enum.Font.SourceSansSemibold
-    button.TextSize = 14
-    button.AutoButtonColor = false
-    button.Parent = section.ContentContainer
-    
-    -- 按钮悬停效果
-    button.MouseEnter:Connect(function()
-        button.BackgroundTransparency = 0
-        button.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
-    end)
-    
-    button.MouseLeave:Connect(function()
-        button.BackgroundTransparency = 0.2
-        button.BackgroundColor3 = Color3.fromRGB(85, 85, 85)
-    end)
-    
-    -- 按钮点击效果
-    button.MouseButton1Down:Connect(function()
-        button.BackgroundColor3 = Color3.fromRGB(120, 120, 120)
-    end)
-    
-    button.MouseButton1Up:Connect(function()
-        button.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
-    end)
-    
-    button.MouseButton1Click:Connect(function()
-        if callback then
-            callback()
-        end
-        wait(0.1)
-        button.BackgroundColor3 = Color3.fromRGB(85, 85, 85)
-    end)
-    
-    table.insert(section.Elements, button)
-    return button
-end
-
--- 创建切换开关的函数
-function CustomUI.CreateToggle(section, name, default, callback)
-    local toggle = {}
-    
-    local frame = Instance.new("Frame")
-    frame.Name = name
-    frame.Size = UDim2.new(1, -10, 0, 35)
-    frame.Position = UDim2.new(0, 0, 0, #section.ContentContainer:GetChildren() * 40)
-    frame.BackgroundTransparency = 1
-    frame.Parent = section.ContentContainer
-    
-    local label = Instance.new("TextLabel")
-    label.Name = "Label"
-    label.Size = UDim2.new(0.7, 0, 1, 0)
-    label.Position = UDim2.new(0, 0, 0, 0)
-    label.BackgroundTransparency = 1
-    label.Text = name
-    label.TextColor3 = Color3.fromRGB(225, 225, 225)
-    label.Font = Enum.Font.SourceSansSemibold
-    label.TextSize = 14
-    label.TextXAlignment = Enum.TextXAlignment.Left
-    label.Parent = frame
-    
-    local switch = Instance.new("Frame")
-    switch.Name = "Switch"
-    switch.Size = UDim2.new(0, 55, 0, 28)
-    switch.Position = UDim2.new(1, -55, 0, 3.5)
-    switch.BackgroundColor3 = default and Color3.fromRGB(70, 200, 70) or Color3.fromRGB(150, 150, 150)
-    switch.BackgroundTransparency = 0.2
-    switch.BorderSizePixel = 0
-    switch.Parent = frame
-    
-    -- 添加开关边框
-    local switchBorder = Instance.new("Frame")
-    switchBorder.Name = "SwitchBorder"
-    switchBorder.Size = UDim2.new(1, 0, 1, 0)
-    switchBorder.Position = UDim2.new(0, 0, 0, 0)
-    switchBorder.BackgroundTransparency = 1
-    switchBorder.BorderSizePixel = 1
-    switchBorder.BorderColor3 = Color3.fromRGB(100, 100, 100)
-    switchBorder.Parent = switch
-    
-    local switchButton = Instance.new("Frame")
-    switchButton.Name = "SwitchButton"
-    switchButton.Size = UDim2.new(0, 22, 0, 22)
-    switchButton.Position = UDim2.new(0, default and 30 or 3, 0, 3)
-    switchButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    switchButton.BorderSizePixel = 0
-    switchButton.Parent = switch
-    
-    local isToggled = default or false
-    
-    switch.MouseButton1Click:Connect(function()
-        isToggled = not isToggled
-        switch.BackgroundColor3 = isToggled and Color3.fromRGB(70, 200, 70) or Color3.fromRGB(150, 150, 150)
-        switchButton:TweenPosition(UDim2.new(0, isToggled and 30 or 3, 0, 3), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.2, true)
-        
-        if callback then
-            callback(isToggled)
-        end
-    end)
-    
-    toggle.Frame = frame
-    toggle.Value = isToggled
-    table.insert(section.Elements, frame)
-    
-    return toggle
-end
-
--- 创建滑块的函数
-function CustomUI.CreateSlider(section, name, min, max, default, callback)
-    local slider = {}
-    
-    local frame = Instance.new("Frame")
-    frame.Name = name
-    frame.Size = UDim2.new(1, -10, 0, 55)
-    frame.Position = UDim2.new(0, 0, 0, #section.ContentContainer:GetChildren() * 40)
-    frame.BackgroundTransparency = 1
-    frame.Parent = section.ContentContainer
-    
-    local label = Instance.new("TextLabel")
-    label.Name = "Label"
-    label.Size = UDim2.new(1, 0, 0, 22)
-    label.Position = UDim2.new(0, 0, 0, 0)
-    label.BackgroundTransparency = 1
-    label.Text = name .. ": " .. tostring(default)
-    label.TextColor3 = Color3.fromRGB(225, 225, 225)
-    label.Font = Enum.Font.SourceSansSemibold
-    label.TextSize = 14
-    label.TextXAlignment = Enum.TextXAlignment.Left
-    label.Parent = frame
-    
-    local sliderBg = Instance.new("Frame")
-    sliderBg.Name = "SliderBg"
-    sliderBg.Size = UDim2.new(1, 0, 0, 12)
-    sliderBg.Position = UDim2.new(0, 0, 0, 28)
-    sliderBg.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-    sliderBg.BackgroundTransparency = 0.3
-    sliderBg.BorderSizePixel = 0
-    sliderBg.Parent = frame
-    
-    -- 添加滑块背景边框
-    local sliderBgBorder = Instance.new("Frame")
-    sliderBgBorder.Name = "SliderBgBorder"
-    sliderBgBorder.Size = UDim2.new(1, 0, 1, 0)
-    sliderBgBorder.Position = UDim2.new(0, 0, 0, 0)
-    sliderBgBorder.BackgroundTransparency = 1
-    sliderBgBorder.BorderSizePixel = 1
-    sliderBgBorder.BorderColor3 = Color3.fromRGB(90, 90, 90)
-    sliderBgBorder.Parent = sliderBg
-    
-    local sliderFill = Instance.new("Frame")
-    sliderFill.Name = "SliderFill"
-    sliderFill.Size = UDim2.new((default - min) / (max - min), 0, 1, 0)
-    sliderFill.Position = UDim2.new(0, 0, 0, 0)
-    sliderFill.BackgroundColor3 = Color3.fromRGB(100, 200, 255)
-    sliderFill.BackgroundTransparency = 0.2
-    sliderFill.BorderSizePixel = 0
-    sliderFill.Parent = sliderBg
-    
-    local sliderButton = Instance.new("Frame")
-    sliderButton.Name = "SliderButton"
-    sliderButton.Size = UDim2.new(0, 18, 0, 18)
-    sliderButton.Position = UDim2.new((default - min) / (max - min), -9, 0, -3)
-    sliderButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    sliderButton.BorderSizePixel = 0
-    sliderButton.Parent = sliderBg
-    
-    -- 添加滑块按钮边框
-    local sliderButtonBorder = Instance.new("Frame")
-    sliderButtonBorder.Name = "SliderButtonBorder"
-    sliderButtonBorder.Size = UDim2.new(1, 0, 1, 0)
-    sliderButtonBorder.Position = UDim2.new(0, 0, 0, 0)
-    sliderButtonBorder.BackgroundTransparency = 1
-    sliderButtonBorder.BorderSizePixel = 1
-    sliderButtonBorder.BorderColor3 = Color3.fromRGB(120, 120, 120)
-    sliderButtonBorder.Parent = sliderButton
-    
-    local value = default or min
-    
-    -- 滑块拖动功能
-    local isDragging = false
-    
-    sliderButton.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            isDragging = true
-            sliderButton.BackgroundColor3 = Color3.fromRGB(240, 240, 240)
-        end
-    end)
-    
-    sliderButton.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            isDragging = false
-            sliderButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-        end
-    end)
-    
-    game:GetService("UserInputService").InputChanged:Connect(function(input)
-        if isDragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-            local mousePos = game:GetService("UserInputService"):GetMouseLocation()
-            local relativePos = mousePos.X - sliderBg.AbsolutePosition.X
-            local percentage = math.clamp(relativePos / sliderBg.AbsoluteSize.X, 0, 1)
-            value = math.floor(min + (max - min) * percentage)
-            
-            sliderFill:TweenSize(UDim2.new(percentage, 0, 1, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.1, true)
-            sliderButton:TweenPosition(UDim2.new(percentage, -9, 0, -3), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.1, true)
-            label.Text = name .. ": " .. tostring(value)
-            
-            if callback then
-                callback(value)
-            end
-        end
-    end)
-    
-    slider.Frame = frame
-    slider.Value = value
-    table.insert(section.Elements, frame)
-    
-    return slider
-end
-
--- 创建文本框的函数
-function CustomUI.CreateTextbox(section, name, default, callback)
-    local textbox = {}
-    
-    local frame = Instance.new("Frame")
-    frame.Name = name
-    frame.Size = UDim2.new(1, -10, 0, 55)
-    frame.Position = UDim2.new(0, 0, 0, #section.ContentContainer:GetChildren() * 40)
-    frame.BackgroundTransparency = 1
-    frame.Parent = section.ContentContainer
-    
-    local label = Instance.new("TextLabel")
-    label.Name = "Label"
-    label.Size = UDim2.new(1, 0, 0, 22)
-    label.Position = UDim2.new(0, 0, 0, 0)
-    label.BackgroundTransparency = 1
-    label.Text = name
-    label.TextColor3 = Color3.fromRGB(225, 225, 225)
-    label.Font = Enum.Font.SourceSansSemibold
-    label.TextSize = 14
-    label.TextXAlignment = Enum.TextXAlignment.Left
-    label.Parent = frame
-    
-    local input = Instance.new("TextBox")
-    input.Name = "Input"
-    input.Size = UDim2.new(1, 0, 0, 28)
-    input.Position = UDim2.new(0, 0, 0, 28)
-    input.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-    input.BackgroundTransparency = 0.2
-    input.BorderSizePixel = 0
-    input.Text = default or ""
-    input.TextColor3 = Color3.fromRGB(250, 250, 250)
-    input.Font = Enum.Font.SourceSans
-    input.TextSize = 14
-    input.ClearTextOnFocus = false
-    input.TextXAlignment = Enum.TextXAlignment.Left
-    input.PlaceholderColor3 = Color3.fromRGB(180, 180, 180)
-    input.Parent = frame
-    
-    -- 添加文本框边框
-    local inputBorder = Instance.new("Frame")
-    inputBorder.Name = "InputBorder"
-    inputBorder.Size = UDim2.new(1, 0, 1, 0)
-    inputBorder.Position = UDim2.new(0, 0, 0, 0)
-    inputBorder.BackgroundTransparency = 1
-    inputBorder.BorderSizePixel = 1
-    inputBorder.BorderColor3 = Color3.fromRGB(90, 90, 90)
-    inputBorder.Parent = input
-    
-    -- 文本框聚焦效果
-    input.Focused:Connect(function()
-        inputBorder.BorderColor3 = Color3.fromRGB(100, 200, 255)
-        inputBorder.BackgroundTransparency = 0.1
-    end)
-    
-    input.FocusLost:Connect(function(enterPressed)
-        inputBorder.BorderColor3 = Color3.fromRGB(90, 90, 90)
-        inputBorder.BackgroundTransparency = 1
-        if callback then
-            callback(input.Text, enterPressed)
-        end
-    end)
-    
-    textbox.Frame = frame
-    textbox.Value = input.Text
-    table.insert(section.Elements, frame)
-    
-    return textbox
-end
-
--- 创建下拉菜单的函数
-function CustomUI.CreateDropdown(section, name, options, default, callback)
-    local dropdown = {}
-    
-    local frame = Instance.new("Frame")
-    frame.Name = name
-    frame.Size = UDim2.new(1, -10, 0, 60)
-    frame.Position = UDim2.new(0, 0, 0, #section.ContentContainer:GetChildren() * 40)
-    frame.BackgroundTransparency = 1
-    frame.Parent = section.ContentContainer
-    
-    local label = Instance.new("TextLabel")
-    label.Name = "Label"
-    label.Size = UDim2.new(1, 0, 0, 22)
-    label.Position = UDim2.new(0, 0, 0, 0)
-    label.BackgroundTransparency = 1
-    label.Text = name
-    label.TextColor3 = Color3.fromRGB(225, 225, 225)
-    label.Font = Enum.Font.SourceSansSemibold
-    label.TextSize = 14
-    label.TextXAlignment = Enum.TextXAlignment.Left
-    label.Parent = frame
-    
-    local dropdownButton = Instance.new("TextButton")
-    dropdownButton.Name = "DropdownButton"
-    dropdownButton.Size = UDim2.new(1, 0, 0, 30)
-    dropdownButton.Position = UDim2.new(0, 0, 0, 30)
-    dropdownButton.BackgroundColor3 = Color3.fromRGB(75, 75, 75)
-    dropdownButton.BackgroundTransparency = 0.2
-    dropdownButton.BorderSizePixel = 0
-    dropdownButton.Text = default or "选择一个选项"
-    dropdownButton.TextColor3 = Color3.fromRGB(245, 245, 245)
-    dropdownButton.Font = Enum.Font.SourceSans
-    dropdownButton.TextSize = 14
-    dropdownButton.TextXAlignment = Enum.TextXAlignment.Left
-    dropdownButton.AutoButtonColor = false
-    dropdownButton.Parent = frame
-    
-    -- 添加下拉按钮边框
-    local dropdownBorder = Instance.new("Frame")
-    dropdownBorder.Name = "DropdownBorder"
-    dropdownBorder.Size = UDim2.new(1, 0, 1, 0)
-    dropdownBorder.Position = UDim2.new(0, 0, 0, 0)
-    dropdownBorder.BackgroundTransparency = 1
-    dropdownBorder.BorderSizePixel = 1
-    dropdownBorder.BorderColor3 = Color3.fromRGB(90, 90, 90)
-    dropdownBorder.Parent = dropdownButton
-    
-    -- 下拉按钮悬停效果
-    dropdownButton.MouseEnter:Connect(function()
-        dropdownButton.BackgroundTransparency = 0
-        dropdownButton.BackgroundColor3 = Color3.fromRGB(90, 90, 90)
-    end)
-    
-    dropdownButton.MouseLeave:Connect(function()
-        dropdownButton.BackgroundTransparency = 0.2
-        dropdownButton.BackgroundColor3 = Color3.fromRGB(75, 75, 75)
-    end)
-    
-    local dropdownFrame = Instance.new("Frame")
-    dropdownFrame.Name = "DropdownFrame"
-    dropdownFrame.Size = UDim2.new(1, 0, 0, 0)
-    dropdownFrame.Position = UDim2.new(0, 0, 0, 65)
-    dropdownFrame.BackgroundColor3 = Color3.fromRGB(65, 65, 65)
-    dropdownFrame.BackgroundTransparency = 0.1
-    dropdownFrame.BorderSizePixel = 0
-    dropdownFrame.Visible = false
-    dropdownFrame.Parent = frame
-    
-    -- 添加下拉框边框
-    local dropdownFrameBorder = Instance.new("Frame")
-    dropdownFrameBorder.Name = "DropdownFrameBorder"
-    dropdownFrameBorder.Size = UDim2.new(1, 0, 1, 0)
-    dropdownFrameBorder.Position = UDim2.new(0, 0, 0, 0)
-    dropdownFrameBorder.BackgroundTransparency = 1
-    dropdownFrameBorder.BorderSizePixel = 1
-    dropdownFrameBorder.BorderColor3 = Color3.fromRGB(90, 90, 90)
-    dropdownFrameBorder.Parent = dropdownFrame
-    
-    local selectedValue = default or nil
-    
-    -- 点击下拉按钮展开/收起选项
-    dropdownButton.MouseButton1Click:Connect(function()
-        dropdownFrame.Visible = not dropdownFrame.Visible
-        local height = dropdownFrame.Visible and (#options * 30) or 0
-        dropdownFrame:TweenSize(UDim2.new(1, 0, 0, height), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.2, true)
-    end)
-    
-    -- 创建选项按钮
-    for i, option in ipairs(options) do
-        local optionButton = Instance.new("TextButton")
-        optionButton.Name = "Option" .. i
-        optionButton.Size = UDim2.new(1, 0, 0, 30)
-        optionButton.Position = UDim2.new(0, 0, 0, (i - 1) * 30)
-        optionButton.BackgroundTransparency = 0.3
-        optionButton.BackgroundColor3 = Color3.fromRGB(85, 85, 85)
-        optionButton.BorderSizePixel = 0
-        optionButton.Text = option
-        optionButton.TextColor3 = Color3.fromRGB(240, 240, 240)
-        optionButton.Font = Enum.Font.SourceSans
-        optionButton.TextSize = 14
-        optionButton.AutoButtonColor = false
-        optionButton.Parent = dropdownFrame
-        
-        -- 选项按钮悬停效果
-        optionButton.MouseEnter:Connect(function()
-            optionButton.BackgroundTransparency = 0
-            optionButton.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
-        end)
-        
-        optionButton.MouseLeave:Connect(function()
-            optionButton.BackgroundTransparency = 0.3
-            optionButton.BackgroundColor3 = Color3.fromRGB(85, 85, 85)
-        end)
-        
-        optionButton.MouseButton1Click:Connect(function()
-            selectedValue = option
-            dropdownButton.Text = option
-            dropdownFrame.Visible = false
-            
-            if callback then
-                callback(option)
-            end
-        end)
-    end
-    
-    dropdown.Frame = frame
-    dropdown.Value = selectedValue
-    table.insert(section.Elements, frame)
-    
-    return dropdown
-end
-
--- 最小化按钮功能
 local isMinimized = false
 MinimizeButton.MouseButton1Click:Connect(function()
     isMinimized = not isMinimized
@@ -809,13 +238,8 @@ end)
 
 
 
--- 指令功能
-local commandsSection = CustomUI.CreateSection(OtherGamesTab, "指令功能")
-CustomUI.CreateButton(commandsSection, "无限指令(Yield)", function()
-    loadstring(game:HttpGet(('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'),true))()
-end)
 
--- FPS显示
+
 local LBLG = Instance.new("ScreenGui", game.CoreGui)
 local LBL = Instance.new("TextLabel", game.CoreGui)
 local player = game.Players.LocalPlayer
@@ -857,14 +281,12 @@ end
 Start = tick()
 Heartbeat:Connect(HeartbeatUpdate)
 
--- 增强功能标签
 local Enhanced = Window:MakeTab({
     Name = "增强功能",
     Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
 
--- 来自退休脚本的通用功能
 Enhanced:AddButton({
     Name = "FPS提升",
     Callback = function()
@@ -952,10 +374,7 @@ Enhanced:AddButton({
 Enhanced:AddButton({
     Name = "飞行V3",
     Callback = function()
-        -- Gui to Lua
-        -- Version: 3.2
 
-        -- Instances:
         local BeiFengFlyV3 = Instance.new("ScreenGui")
         local Main = Instance.new("Frame")
         local TopBar = Instance.new("Frame")
@@ -970,7 +389,6 @@ Enhanced:AddButton({
         local Speed = Instance.new("TextLabel")
         local Fly = Instance.new("TextButton")
 
-        --Properties:
         BeiFengFlyV3.Name = "BeiFengFlyV3"
         BeiFengFlyV3.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
         BeiFengFlyV3.ResetOnSpawn = false
@@ -1349,7 +767,6 @@ Enhanced:AddButton({
     end
 })
 
--- 来自废物APT脚本的DOORS功能
 Enhanced:AddButton({
     Name = "DOORS引导之光手电",
     Callback = function()
@@ -1404,7 +821,6 @@ Enhanced:AddButton({
     end
 })
 
--- 更多APT脚本功能
 Enhanced:AddButton({
     Name = "DOORS杰夫毛绒玩具",
     Callback = function()
@@ -1451,7 +867,6 @@ Enhanced:AddButton({
         
             local function addEspToCandy(candy)
                 if not candy:FindFirstChild("CandyESP") then
-                    -- Create BillboardGui
                     local billboardGui = Instance.new("BillboardGui")
                     billboardGui.Name = "CandyESP"
                     billboardGui.Size = UDim2.new(4, 0, 3, 0) -- Larger size for better visibility
@@ -1459,7 +874,6 @@ Enhanced:AddButton({
                     billboardGui.AlwaysOnTop = true
                     billboardGui.Parent = candy
         
-                    -- Create "Candy Root" TextLabel
                     local textLabel = Instance.new("TextLabel")
                     textLabel.Text = "糖果"
                     textLabel.Size = UDim2.new(1, 0, 0.5, 0)
@@ -1469,7 +883,6 @@ Enhanced:AddButton({
                     textLabel.Font = Enum.Font.SourceSansBold
                     textLabel.Parent = billboardGui
         
-                    -- Create Distance Label (positioned further below the "Candy Root" text)
                     local distanceLabel = Instance.new("TextLabel")
                     distanceLabel.Name = "距离"
                     distanceLabel.Size = UDim2.new(1, 0, 0.3, 0)
@@ -1480,7 +893,6 @@ Enhanced:AddButton({
                     distanceLabel.Font = Enum.Font.SourceSansBold
                     distanceLabel.Parent = billboardGui
         
-                    -- Update the distance if showDistance is enabled
                     game:GetService("RunService").RenderStepped:Connect(function()
                         if candyEspEnabled and showDistance then
                             local player = game.Players.LocalPlayer
@@ -1494,7 +906,6 @@ Enhanced:AddButton({
             end
         
             local function findAllCandyRoots()
-                -- Search all descendants in Workspace for parts named "CandyRoot"
                 for _, descendant in ipairs(workspace:GetDescendants()) do
                     if descendant:IsA("BasePart") and descendant.Name == "CandyRoot" then
                         addEspToCandy(descendant)
@@ -1505,21 +916,18 @@ Enhanced:AddButton({
             if candyEspEnabled then
                 findAllCandyRoots()
         
-                -- Listen for new parts being added to Workspace
                 connections.candyRootAdded = workspace.DescendantAdded:Connect(function(descendant)
                     if descendant:IsA("BasePart") and descendant.Name == "CandyRoot" then
                         addEspToCandy(descendant)
                     end
                 end)
             else
-                -- Remove ESP from each candy root when the toggle is off
                 for _, descendant in ipairs(workspace:GetDescendants()) do
                     if descendant:IsA("BasePart") and descendant:FindFirstChild("CandyESP") then
                         descendant.CandyESP:Destroy()
                     end
                 end
         
-                -- Disconnect any connections to prevent memory leaks
                 if connections.candyRootAdded then
                     connections.candyRootAdded:Disconnect()
                     connections.candyRootAdded = nil
@@ -1527,14 +935,12 @@ Enhanced:AddButton({
             end
         end)
         
-        -- Second toggle: Show/Hide Distance
         OwO:Toggle("糖果距离", false, function(enabled)
             showDistance = enabled
         end)
     end
 })
 
--- 用户信息标签
 local Home = Window:MakeTab({
     Name = "用户信息",
     Icon = "rbxassetid://4483345998",
@@ -1546,14 +952,12 @@ Home:AddParagraph("注入器:", " "..identifyexecutor().."")
 Home:AddParagraph("服务器ID:", " "..game.GameId.."")
 Home:AddParagraph("时间:", " "..os.date("%Y-%m-%d %H:%M:%S").."")
 
--- 通用功能标签
 local Universal = Window:MakeTab({
     Name = "通用功能",
     Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
 
--- 增强的通用功能
 Universal:AddToggle({
     Name = "夜视",
     Default = false,
@@ -1612,7 +1016,6 @@ Universal:AddTextbox({
     end
 })
 
--- 移动速度控制
 Universal:AddSlider({
     Name = "移动速度",
     Min = 16,
@@ -1626,7 +1029,6 @@ Universal:AddSlider({
     end    
 })
 
--- 跳跃高度控制
 Universal:AddSlider({
     Name = "跳跃高度",
     Min = 50,
@@ -1640,7 +1042,6 @@ Universal:AddSlider({
     end    
 })
 
--- 重力控制
 Universal:AddTextbox({
     Name = "重力设置",
     Default = "",
@@ -1650,7 +1051,6 @@ Universal:AddTextbox({
     end
 })
 
--- 飞行功能
 Universal:AddToggle({
     Name = "飞行",
     Default = false,
@@ -1677,7 +1077,6 @@ Universal:AddToggle({
             _G.BodyVelocity = bodyVelocity
             _G.BodyGyro = bodyGyro
             
-            -- 飞行控制
             _G.FlyConnection = game:GetService("RunService").Stepped:Connect(function()
                 if _G.Flying and _G.BodyVelocity and _G.BodyGyro then
                     local camera = workspace.CurrentCamera
@@ -1725,7 +1124,6 @@ Universal:AddToggle({
     end
 })
 
--- 增强飞行功能
 Universal:AddToggle({
     Name = "增强飞行",
     Default = false,
@@ -1752,7 +1150,6 @@ Universal:AddToggle({
             _G.EnhancedBodyVelocity = bodyVelocity
             _G.EnhancedBodyGyro = bodyGyro
             
-            -- 增强飞行控制
             _G.EnhancedFlyConnection = game:GetService("RunService").RenderStepped:Connect(function()
                 if _G.EnhancedFlying and _G.EnhancedBodyVelocity and _G.EnhancedBodyGyro then
                     local camera = workspace.CurrentCamera
@@ -1803,7 +1200,6 @@ Universal:AddToggle({
     end    
 })
 
--- 夜视功能
 Universal:AddToggle({
     Name = "夜视",
     Default = false,
@@ -1816,7 +1212,6 @@ Universal:AddToggle({
     end
 })
 
--- 穿墙功能
 Universal:AddToggle({
     Name = "穿墙",
     Default = false,
@@ -1844,7 +1239,6 @@ Universal:AddToggle({
     end
 })
 
--- 无击倒功能
 Universal:AddToggle({
     Name = "无击倒",
     Default = false,
@@ -1859,7 +1253,6 @@ Universal:AddToggle({
     end    
 })
 
--- 超级跳跃功能
 Universal:AddToggle({
     Name = "超级跳跃",
     Default = false,
@@ -1875,7 +1268,6 @@ Universal:AddToggle({
     end    
 })
 
--- 点击传送工具
 Universal:AddButton({
     Name = "点击传送工具",
     Callback = function()
@@ -1892,14 +1284,12 @@ Universal:AddButton({
     end
 })
 
--- 传送工具增强版
 Teleports:AddButton({
     Name = "增强传送工具",
     Callback = function()
         local player = game.Players.LocalPlayer
         local mouse = player:GetMouse()
         
-        -- 创建一个可视化标记
         local marker = Instance.new("Part")
         marker.Name = "TeleportMarker"
         marker.Size = Vector3.new(2, 0.5, 2)
@@ -1931,7 +1321,6 @@ Teleports:AddButton({
         markerGui.Parent = marker
         marker.Parent = workspace
         
-        -- 连接鼠标移动事件
         local mouseMoveConnection
         mouseMoveConnection = mouse.Move:Connect(function()
             local target = mouse.Target
@@ -1941,7 +1330,6 @@ Teleports:AddButton({
             end
         end)
         
-        -- 连接鼠标点击事件
         local mouseClickConnection
         mouseClickConnection = mouse.Button1Down:Connect(function()
             local target = mouse.Target
@@ -1949,7 +1337,6 @@ Teleports:AddButton({
                 local position = target.Position + Vector3.new(0, target.Size.Y/2 + 5, 0)
                 player.Character.HumanoidRootPart.CFrame = CFrame.new(position)
                 
-                -- 清理标记
                 mouseMoveConnection:Disconnect()
                 mouseClickConnection:Disconnect()
                 marker:Destroy()
@@ -1972,7 +1359,6 @@ Teleports:AddButton({
     end
 })
 
--- 无敌功能
 Universal:AddButton({
     Name = "无敌",
     Callback = function()
@@ -2012,11 +1398,9 @@ Universal:AddButton({
     end
 })
 
--- 隐身功能
 Universal:AddButton({
     Name = "隐身(E键)",
     Callback = function()
-        -- Roblox Invisibility Toggle Script
         local ScriptStarted = false
         local Keybind = "E"
         local Transparency = true
@@ -2165,7 +1549,6 @@ Universal:AddButton({
     end
 })
 
--- 无限子弹功能
 Universal:AddButton({
     Name = "无限子弹",
     Callback = function()
@@ -2189,7 +1572,6 @@ Universal:AddButton({
     end
 })
 
--- 自瞄功能
 Universal:AddToggle({
     Name = "基础自瞄",
     Default = false,
@@ -2236,13 +1618,11 @@ Universal:AddToggle({
     end
 })
 
--- 来自小凌自瞄源码的高级自瞄功能
 Enhanced:AddToggle({
     Name = "高级自瞄",
     Default = false,
     Callback = function(Value)
         if Value then
-            -- 创建自瞄GUI
             local ScreenGui = Instance.new("ScreenGui")
             ScreenGui.Name = "AimbotGUI"
             ScreenGui.Parent = game.CoreGui
@@ -2287,7 +1667,6 @@ Enhanced:AddToggle({
                 _G.AdvancedAimbot = false
             end)
             
-            -- 高级自瞄逻辑
             _G.AdvancedAimbot = true
             spawn(function()
                 local Players = game:GetService("Players")
@@ -2313,12 +1692,10 @@ Enhanced:AddToggle({
                     end
                     
                     if ClosestPlayer and ClosestPlayer.Character and ClosestPlayer.Character:FindFirstChild("Head") then
-                        -- 更平滑的瞄准
                         local TargetPosition = ClosestPlayer.Character.Head.Position
                         local CurrentCFrame = Camera.CFrame
                         local NewCFrame = CFrame.new(CurrentCFrame.Position, TargetPosition)
                         
-                        -- 使用插值使瞄准更平滑
                         Camera.CFrame = CurrentCFrame:Lerp(NewCFrame, 0.1)
                     end
                     
@@ -2327,7 +1704,6 @@ Enhanced:AddToggle({
             end)
         else
             _G.AdvancedAimbot = false
-            -- 移除GUI
             pcall(function()
                 game.CoreGui.AimbotGUI:Destroy()
             end)
@@ -2335,7 +1711,6 @@ Enhanced:AddToggle({
     end
 })
 
--- 传送功能标签
 local Teleports = Window:MakeTab({
     Name = "传送功能",
     Icon = "rbxassetid://4483345998",
@@ -2344,7 +1719,6 @@ local Teleports = Window:MakeTab({
 
 Teleports:AddSection("基础传送")
 
--- 常用传送位置
 Teleports:AddButton({
     Name = "传送到出生点",
     Callback = function()
@@ -2368,7 +1742,6 @@ Teleports:AddButton({
 
 Teleports:AddSection("位置保存与传送")
 
--- 保存当前位置
 local savedPositions = {}
 Teleports:AddButton({
     Name = "保存当前位置",
@@ -2390,7 +1763,6 @@ Teleports:AddButton({
     end
 })
 
--- 传送到保存的位置
 local savedPositionsDropdown = {}
 for i = 1, 10 do
     table.insert(savedPositionsDropdown, "保存位置 #" .. i)
@@ -2417,14 +1789,12 @@ Teleports:AddDropdown({
 
 Teleports:AddSection("特殊传送")
 
--- 特殊传送功能（基于示例代码）
 Teleports:AddButton({
     Name = "特殊传送（远程事件）",
     Callback = function()
         local ReplicatedStorage = game:GetService("ReplicatedStorage")
         local Players = game:GetService("Players")
         
-        -- 检查是否存在远程事件
         local launchRemoteExists, launchRemote = pcall(function()
             return ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("LaunchEvents"):WaitForChild("Launch")
         end)
@@ -2437,17 +1807,14 @@ Teleports:AddButton({
             local player = Players.LocalPlayer
             local character = player.Character or player.CharacterAdded:Wait()
             
-            -- 触发启动远程事件
             launchRemote:FireServer()
             
             task.wait(1)
             
-            -- 将玩家传送到极远位置
             character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(9000000000e9, 90000000000e9, 9000000000e9)
             
             task.wait(1)
             
-            -- 触发返回远程事件
             returnRemote:FireServer()
             
             OrionLib:MakeNotification({
@@ -2469,7 +1836,6 @@ Teleports:AddButton({
 
 Teleports:AddSection("自定义坐标传送")
 
--- 自定义坐标传送
 Teleports:AddTextbox({
     Name = "X坐标",
     Default = "0",
@@ -2510,14 +1876,12 @@ Teleports:AddButton({
 
 Teleports:AddSection("增强传送工具")
 
--- 传送工具增强版
 Teleports:AddButton({
     Name = "增强传送工具",
     Callback = function()
         local player = game.Players.LocalPlayer
         local mouse = player:GetMouse()
         
-        -- 创建一个可视化标记
         local marker = Instance.new("Part")
         marker.Name = "TeleportMarker"
         marker.Size = Vector3.new(2, 0.5, 2)
@@ -2549,7 +1913,6 @@ Teleports:AddButton({
         markerGui.Parent = marker
         marker.Parent = workspace
         
-        -- 连接鼠标移动事件
         local mouseMoveConnection
         mouseMoveConnection = mouse.Move:Connect(function()
             local target = mouse.Target
@@ -2559,7 +1922,6 @@ Teleports:AddButton({
             end
         end)
         
-        -- 连接鼠标点击事件
         local mouseClickConnection
         mouseClickConnection = mouse.Button1Down:Connect(function()
             local target = mouse.Target
@@ -2567,7 +1929,6 @@ Teleports:AddButton({
                 local position = target.Position + Vector3.new(0, target.Size.Y/2 + 5, 0)
                 player.Character.HumanoidRootPart.CFrame = CFrame.new(position)
                 
-                -- 清理标记
                 mouseMoveConnection:Disconnect()
                 mouseClickConnection:Disconnect()
                 marker:Destroy()
@@ -2590,7 +1951,6 @@ Teleports:AddButton({
     end
 })
 
--- 保存当前位置
 local savedPositions = {}
 Teleports:AddButton({
     Name = "保存当前位置",
@@ -2612,7 +1972,6 @@ Teleports:AddButton({
     end
 })
 
--- 传送到保存的位置
 local savedPositionsDropdown = {}
 for i = 1, 10 do
     table.insert(savedPositionsDropdown, "保存位置 #" .. i)
@@ -2637,14 +1996,12 @@ Teleports:AddDropdown({
     end
 })
 
--- 特殊传送功能（基于示例代码）
 Teleports:AddButton({
     Name = "特殊传送（远程事件）",
     Callback = function()
         local ReplicatedStorage = game:GetService("ReplicatedStorage")
         local Players = game:GetService("Players")
         
-        -- 检查是否存在远程事件
         local launchRemoteExists, launchRemote = pcall(function()
             return ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("LaunchEvents"):WaitForChild("Launch")
         end)
@@ -2657,17 +2014,14 @@ Teleports:AddButton({
             local player = Players.LocalPlayer
             local character = player.Character or player.CharacterAdded:Wait()
             
-            -- 触发启动远程事件
             launchRemote:FireServer()
             
             task.wait(1)
             
-            -- 将玩家传送到极远位置
             character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(9000000000e9, 90000000000e9, 9000000000e9)
             
             task.wait(1)
             
-            -- 触发返回远程事件
             returnRemote:FireServer()
             
             OrionLib:MakeNotification({
@@ -2687,7 +2041,6 @@ Teleports:AddButton({
     end
 })
 
--- 自定义坐标传送
 Teleports:AddTextbox({
     Name = "X坐标",
     Default = "0",
@@ -2726,14 +2079,12 @@ Teleports:AddButton({
     end
 })
 
--- Ohio特定功能标签
 local Ohio = Window:MakeTab({
     Name = "俄亥俄州功能",
     Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
 
--- 瞬移功能
 Ohio:AddDropdown({
     Name = "瞬移位置",
     Default = "",
@@ -2785,7 +2136,6 @@ Ohio:AddDropdown({
     end
 })
 
--- 自动功能
 Ohio:AddToggle({
     Name = "银行刷新提醒",
     Callback = function(Value)
@@ -2838,7 +2188,6 @@ Gem2 = function()
     end
 end
 
--- 自动银行功能
 Ohio:AddToggle({
     Name = "自动银行",
     Callback = function(Value)
@@ -2885,7 +2234,6 @@ AutoBank2 = function()
     end
 end
 
--- 自动金保险箱功能
 Ohio:AddToggle({
     Name = "自动金保险箱",
     Callback = function(Value)
@@ -2943,7 +2291,6 @@ AutoSafe2 = function()
     end
 end
 
--- 监狱人生功能标签
 local Jailbreak = Window:MakeTab({
     Name = "监狱人生",
     Icon = "rbxassetid://4483345998",
@@ -3016,14 +2363,11 @@ AutoEscapeFunc = function()
         local character = player.Character or player.CharacterAdded:Wait()
         local humanoid = character:FindFirstChildOfClass("Humanoid")
         
-        -- 检查是否在监狱内
         if character and humanoid then
             local rootPart = character:FindFirstChild("HumanoidRootPart")
             if rootPart then
                 local position = rootPart.Position
-                -- 如果在监狱区域内
                 if position.X < 0 and position.Z > 2000 then
-                    -- 传送到越狱点
                     rootPart.CFrame = CFrame.new(-937.5891723632812, 93.09876251220703, 2063.031982421875)
                 end
             end
@@ -3031,7 +2375,6 @@ AutoEscapeFunc = function()
     end
 end
 
--- DOORS功能标签
 local Doors = Window:MakeTab({
     Name = "DOORS功能",
     Icon = "rbxassetid://4483345998",
@@ -3102,7 +2445,6 @@ Doors:AddButton({
     end
 })
 
--- 其他游戏标签
 local OtherGames = Window:MakeTab({
     Name = "其他游戏",
     Icon = "rbxassetid://4483345998",
@@ -3145,7 +2487,6 @@ OtherGames:AddButton({
     end
 })
 
--- 来自退休脚本的更多功能
 OtherGames:AddButton({
     Name = "鸭脚本",
     Callback = function()
@@ -3389,7 +2730,6 @@ OtherGames:AddButton({
     end
 })
 
--- 关于标签
 local About = Window:MakeTab({
     Name = "关于",
     Icon = "rbxassetid://4483345998",
@@ -3403,166 +2743,11 @@ About:AddParagraph("作者", "综合脚本开发团队")
 About:AddParagraph("版本", "v2.0.0")
 About:AddParagraph("更新日期", "2025-09-12")
 
--- 创建示例标签和功能
-local UniversalTab = CustomUI.CreateTab("通用功能")
-local TeleportTab = CustomUI.CreateTab("传送功能")
-local GameSpecificTab = CustomUI.CreateTab("游戏特定")
-local OtherGamesTab = CustomUI.CreateTab("其他游戏")
 
--- 通用功能示例
-local movementSection = CustomUI.CreateSection(UniversalTab, "移动控制")
-CustomUI.CreateButton(movementSection, "超级跳跃", function()
-    game.Players.LocalPlayer.Character.Humanoid.JumpHeight = 50
-end)
 
-CustomUI.CreateButton(movementSection, "重置跳跃高度", function()
-    game.Players.LocalPlayer.Character.Humanoid.JumpHeight = 7.2
-end)
-
-local speedSlider = CustomUI.CreateSlider(movementSection, "移动速度", 16, 100, 16, function(value)
-    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = value
-end)
-
-CustomUI.CreateToggle(movementSection, "飞行模式", false, function(value)
-    if value then
-        game.Players.LocalPlayer.Character.Humanoid.PlatformStand = true
-    else
-        game.Players.LocalPlayer.Character.Humanoid.PlatformStand = false
-    end
-end)
-
--- 传送功能增强版
-local teleportSection = CustomUI.CreateSection(TeleportTab, "传送功能")
-
--- 显示当前坐标
-local currentPosLabel = Instance.new("TextLabel")
-currentPosLabel.Name = "CurrentPosLabel"
-currentPosLabel.Size = UDim2.new(1, -10, 0, 30)
-currentPosLabel.Position = UDim2.new(0, 0, 0, 0)
-currentPosLabel.BackgroundTransparency = 1
-currentPosLabel.Text = "当前坐标: (0, 0, 0)"
-currentPosLabel.TextColor3 = Color3.fromRGB(220, 220, 220)
-currentPosLabel.Font = Enum.Font.SourceSans
-currentPosLabel.TextSize = 14
-currentPosLabel.TextXAlignment = Enum.TextXAlignment.Left
-currentPosLabel.Parent = teleportSection.ContentContainer
-
--- 更新坐标显示
-local function updatePositionDisplay()
-    local player = game.Players.LocalPlayer
-    if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-        local pos = player.Character.HumanoidRootPart.Position
-        currentPosLabel.Text = string.format("当前坐标: (%.1f, %.1f, %.1f)", pos.X, pos.Y, pos.Z)
-    end
-end
-
--- 每秒更新一次坐标显示
-spawn(function()
-    while true do
-        updatePositionDisplay()
-        wait(1)
-    end
-end)
-
--- 保存当前位置
-local savedPositions = {}
-CustomUI.CreateButton(teleportSection, "保存当前位置", function()
-    local player = game.Players.LocalPlayer
-    if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-        local position = player.Character.HumanoidRootPart.CFrame
-        table.insert(savedPositions, {
-            name = "位置 #" .. #savedPositions + 1,
-            cframe = position
-        })
-        print("位置已保存: 已保存当前位置为位置 #" .. #savedPositions)
-    end
-end)
-
--- 传送到保存的位置（下拉菜单）
-local savedPositionsOptions = {"请选择位置"}
-CustomUI.CreateDropdown(teleportSection, "传送到保存的位置", savedPositionsOptions, "请选择位置", function(value)
-    if value ~= "请选择位置" then
-        local index = tonumber(string.sub(value, -1))
-        if savedPositions[index] and savedPositions[index].cframe then
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = savedPositions[index].cframe
-            print("已传送到保存的位置 #" .. index)
-        else
-            print("错误: 位置 #" .. index .. " 尚未保存")
-        end
-    end
-end)
-
--- 自定义坐标传送
-local xCoord = CustomUI.CreateTextbox(teleportSection, "X坐标", "0", function(value)
-    -- 可以在这里添加验证逻辑
-end)
-
-local yCoord = CustomUI.CreateTextbox(teleportSection, "Y坐标", "0", function(value)
-    -- 可以在这里添加验证逻辑
-end)
-
-local zCoord = CustomUI.CreateTextbox(teleportSection, "Z坐标", "0", function(value)
-    -- 可以在这里添加验证逻辑
-end)
-
-CustomUI.CreateButton(teleportSection, "传送到自定义坐标", function()
-    local x = tonumber(xCoord.Value) or 0
-    local y = tonumber(yCoord.Value) or 0
-    local z = tonumber(zCoord.Value) or 0
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(x, y, z)
-    print("已传送到坐标: (" .. x .. ", " .. y .. ", " .. z .. ")")
-end)
-
--- 基础传送位置
-CustomUI.CreateButton(teleportSection, "传送到出生点", function()
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(0, 20, 0)
-end)
-
-CustomUI.CreateButton(teleportSection, "传送到天空", function()
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(0, 1000, 0)
-end)
-
-CustomUI.CreateButton(teleportSection, "传送到地下", function()
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(0, -100, 0)
-end)
-
--- 游戏特定功能示例
-local doorsSection = CustomUI.CreateSection(GameSpecificTab, "DOORS游戏")
-CustomUI.CreateButton(doorsSection, "夜视功能", function()
-    game.Lighting.Ambient = Color3.new(1, 1, 1)
-end)
-
-CustomUI.CreateButton(doorsSection, "恢复正常光照", function()
-    game.Lighting.Ambient = Color3.new(0, 0, 0)
-end)
-
-CustomUI.CreateToggle(doorsSection, "穿墙模式", false, function(value)
-    game.Players.LocalPlayer.Character.Head.CanCollide = not value
-    game.Players.LocalPlayer.Character.UpperTorso.CanCollide = not value
-    game.Players.LocalPlayer.Character.LowerTorso.CanCollide = not value
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CanCollide = not value
-end)
-
--- 其他游戏功能示例
-local otherGamesSection = CustomUI.CreateSection(OtherGamesTab, "外部脚本")
-CustomUI.CreateButton(otherGamesSection, "墨水游戏OP级脚本", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/ScripterVaz/InkGameAzure/main/Protected_7974105512464815.lua.txt"))()
-end)
-
-CustomUI.CreateButton(otherGamesSection, "99夜全能脚本", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/VapeVoidware/VW-Add/main/nightsintheforest.lua", true))()
-end)
-
-CustomUI.CreateButton(otherGamesSection, "后门v6x", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/iK4oS/backdoor.exe/v6x/source.lua"))()
-end)
-
--- 创建游戏自带的提示函数
 local function createGameNotification(title, message, duration)
-    -- 使用游戏的StarterGui来显示通知
     local StarterGui = game:GetService("StarterGui")
     
-    -- 显示提示信息
     pcall(function()
         StarterGui:SetCore("SendNotification", {
             Title = title,
@@ -3571,59 +2756,54 @@ local function createGameNotification(title, message, duration)
         })
     end)
     
-    -- 同时在控制台打印信息
     print("[" .. title .. "] " .. message)
 end
 
--- 显示脚本加载完成信息
-createGameNotification("综合罗布勒斯脚本", "v3.7.0加载完成！已重新引入Orion库依赖。", 5)
+createGameNotification("综合罗布勒斯脚本", "v3.8.0加载完成！已重新引入Orion库依赖。", 5)
 createGameNotification("使用说明", "请查看屏幕上的Orion库界面以访问脚本功能", 5)
 createGameNotification("重要提示", "已恢复使用Orion库的悬浮窗UI框架", 5)
 
---[[
-    综合罗布勒斯脚本
-    版本: v3.7.0
-    更新日期: 2025-09-12
-    
-    功能说明:
-    - 用户信息显示
-    - 通用功能（移动速度、跳跃高度、重力控制、夜视、穿墙、飞行、隐身、无限子弹、自瞄等）
-    - 传送功能（包括常用位置传送、保存位置传送、自定义坐标传送、特殊传送（远程事件）、增强传送工具等）
-    - Ohio特定功能（瞬移位置、银行/珠宝店刷新提醒、自动银行、自动金保险箱等）
-    - 监狱人生传送位置和自动越狱功能
-    - DOORS游戏功能（夜视仪、吸铁石、神圣炸弹、自动躲避、门提示、自动收集物品等）
-    - 指令功能（无限指令/Yield等）
-    - 增强功能（FPS提升、光影效果、超高画质、旋转效果、踏空行走、电脑键盘、飞车效果、飞行功能等）
-    - 其他游戏的实用功能（透视、自动攻击、自动拾取、玩家透视等）
-    - 来自多个流行脚本的功能（鸭脚本、刺客脚本、导管中心、北约中心、脚本中心等）
-    - 北风中心系列脚本功能（力量传奇、极速传奇、吃人的火车爱德华、跟踪玩家、飞行V3等）
-    
-    传送功能增强说明:
-    - 保存位置传送: 可以保存当前角色位置，并在需要时传送回该位置
-    - 自定义坐标传送: 可以输入具体坐标值进行精确传送
-    - 特殊传送（远程事件）: 基于远程事件的特殊传送机制
-    - 增强传送工具: 提供可视化标记的传送工具，方便精确选择传送位置
-    
-    新增功能:
-    - 反挂机功能：防止游戏检测到挂机
-    - 高级自瞄功能：更平滑、更精确的自瞄
-    - DOORS增强功能：杰夫毛绒玩具、变成杰夫杀手、金色手摇、召唤肘击王、万圣节糖果透视等
-    - 更多透视功能：玩家透视等
-    - 更多脚本中心：来自多个流行脚本的功能
-    - 北风中心系列脚本：力量传奇、极速传奇、吃人的火车爱德华、跟踪玩家、飞行V3等
-    - 更多通用功能：无击倒、超级跳跃、增强飞行等
-    - 更多外部脚本链接：墨水游戏、99夜、后门系列、鹿管脚本等
-    - 重新引入Orion库依赖：恢复使用Orion库的悬浮窗UI框架
-    
-    注意事项:
-    - 此脚本仅供娱乐使用，仅供参考学习
-    - 请勿用于非法用途或违反游戏规则的行为
-    - 不保证所有功能在所有游戏中都能正常运行
-    - 使用本脚本造成的任何后果由使用者自行承担
-    
-    版权声明:
-    - 本脚本结合了多个开源脚本的功能
-    - 部分代码来源于网络公开资源
-    - 请勿用于商业用途
---]]
+local about = Window:MakeTab({
+    Name = "作者信息",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
 
+about:AddParagraph("作者: 综合脚本团队")
+about:AddParagraph("此脚本结合了多个开源脚本的功能")
+about:AddParagraph("仅供娱乐和学习使用")
+about:AddParagraph("请勿用于非法用途")
+
+local playerInfo = Window:MakeTab({
+    Name = "玩家信息",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+playerInfo:AddParagraph("您的用户名:", " "..game.Players.LocalPlayer.Name.."")
+playerInfo:AddParagraph("您的注入器:", " "..identifyexecutor().."")
+playerInfo:AddParagraph("您当前服务器的ID", " "..game.GameId.."")
+
+local announcement = Window:MakeTab({
+    Name = "公告",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+announcement:AddParagraph("此脚本为免费缝合脚本")
+announcement:AddParagraph("仅供娱乐和学习使用")
+announcement:AddParagraph("请勿用于非法用途")
+announcement:AddParagraph("使用本脚本造成的任何后果由使用者自行承担")
+
+local copyInfo = Window:MakeTab({
+    Name = "复制作者信息",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+copyInfo:AddButton({
+    Name = "复制作者QQ",
+    Callback = function()
+        setclipboard("2131869117")
+    end
+})
